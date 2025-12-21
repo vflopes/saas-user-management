@@ -130,27 +130,24 @@ resource "aws_cognito_user_pool" "user_pool" {
   }
 
   schema {
-    attribute_data_type      = "String"
-    name                     = "email"
-    required                 = true
-    mutable                  = true
-    developer_only_attribute = false
+    attribute_data_type = "String"
+    name                = "email"
+    required            = true
+    mutable             = true
   }
 
   schema {
-    attribute_data_type      = "String"
-    name                     = "phone_number"
-    required                 = false
-    mutable                  = true
-    developer_only_attribute = false
+    attribute_data_type = "String"
+    name                = "phone_number"
+    required            = false
+    mutable             = true
   }
 
   schema {
-    attribute_data_type      = "String"
-    name                     = "preferred_username"
-    required                 = true
-    mutable                  = true
-    developer_only_attribute = false
+    attribute_data_type = "String"
+    name                = "preferred_username"
+    required            = true
+    mutable             = true
     string_attribute_constraints {
       min_length = 2
       max_length = 24
@@ -158,51 +155,26 @@ resource "aws_cognito_user_pool" "user_pool" {
   }
 
   schema {
-    attribute_data_type      = "String"
-    name                     = "nickname"
-    required                 = false
-    mutable                  = true
-    developer_only_attribute = false
+    attribute_data_type = "String"
+    name                = "nickname"
+    required            = false
+    mutable             = true
     string_attribute_constraints {
+      min_length = 0
       max_length = 32
     }
   }
 
   schema {
     attribute_data_type      = "String"
-    name                     = "custom:role"
+    name                     = "role"
     required                 = false
     mutable                  = true
     developer_only_attribute = true
   }
+
+  lifecycle {
+    ignore_changes = [schema]
+  }
 }
 
-# resource "aws_cognito_user_pool_client" "this" {
-#   name         = "${local.app_name}-production-client"
-#   user_pool_id = aws_cognito_user_pool.this.id
-
-#   generate_secret = false
-
-#   supported_identity_providers = ["COGNITO"]
-
-#   explicit_auth_flows = [
-#     "ALLOW_REFRESH_TOKEN_AUTH",
-#     "ALLOW_USER_PASSWORD_AUTH",
-#     "ALLOW_USER_SRP_AUTH",
-#     "ALLOW_CUSTOM_AUTH"
-#   ]
-
-#   prevent_user_existence_errors = "ENABLED"
-#   enable_token_revocation       = true
-#   auth_session_validity         = 3
-
-#   access_token_validity  = 60
-#   id_token_validity      = 60
-#   refresh_token_validity = 30
-
-#   token_validity_units {
-#     access_token  = "minutes"
-#     id_token      = "minutes"
-#     refresh_token = "days"
-#   }
-# }
