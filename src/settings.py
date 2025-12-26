@@ -33,10 +33,7 @@ def get_aws_ssm_parameter(
 
 
 class ReCaptchaSettings(BaseModel):
-    secret_key: Optional[str] = Field(
-        default=None,
-        description="reCAPTCHA secret key",
-    )
+    secret_key: Optional[str]
 
 
 class Settings(BaseSettings):
@@ -50,8 +47,6 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def aws_ssm_parameter_store(self) -> Self:
-        print("Loading settings from AWS SSM Parameter Store...")
-        print(f"AWS_SESSION_TOKEN: {AwsSessionToken}")
         if not AwsSessionToken:
             return self
         # Override secret_key with value from AWS SSM
@@ -65,6 +60,4 @@ class Settings(BaseSettings):
 
         return self
 
-    recaptcha: ReCaptchaSettings = Field(
-        default=..., description="reCAPTCHA settings"
-    )
+    recaptcha: ReCaptchaSettings

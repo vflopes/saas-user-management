@@ -19,7 +19,7 @@ class ClientMetadata(BaseModel):
 
 
 def get_settings() -> Callable[[], Settings]:
-    settings = Settings()
+    settings = Settings.model_validate({})
     return lambda: settings
 
 
