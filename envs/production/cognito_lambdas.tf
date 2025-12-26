@@ -2,7 +2,7 @@ locals {
   cognito_lambdas = {
     "pre-sign-up-trigger" = {
       "environment_vars" = tomap({
-        "APP_RECAPTCHA_SECRET_KEY" = "/saas-manual-inputs/recaptcha/secret-key"
+        "APP_RECAPTCHA__SECRET_KEY" = "/saas-manual-inputs/recaptcha/secret-key"
       })
     },
   }

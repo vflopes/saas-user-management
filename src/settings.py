@@ -42,7 +42,7 @@ class Settings(BaseSettings):
         case_sensitive=False,
         env_file=".env",
         env_file_encoding="utf-8",
-        env_nested_delimiter="_",
+        env_nested_delimiter="__",
     )
 
     @model_validator(mode="after")
@@ -50,8 +50,6 @@ class Settings(BaseSettings):
         if not AwsSessionToken:
             return self
         # Override secret_key with value from AWS SSM
-        print(f"reCAPTCHA secret_key: {self.recaptcha.secret_key}")
-        print(os.getenv("APP_RECAPTCHA_SECRET_KEY"))
         if self.recaptcha.secret_key is not None:
             self.recaptcha.secret_key = get_aws_ssm_parameter(
                 parameter_name=self.recaptcha.secret_key,
