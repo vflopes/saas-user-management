@@ -5,10 +5,6 @@ import json
 from typing import Any, Optional
 from typing_extensions import Self
 
-from pydantic import (
-    Field,
-)
-
 from pydantic import BaseModel, model_validator
 from pydantic_settings import (
     BaseSettings,

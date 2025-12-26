@@ -36,11 +36,13 @@ def lambda_handler(event: PreSignUpTriggerEvent, context):
         # Validate client_metadata
         # client_metadata can be None in the event, so default to {}
         metadata_dict = event.request.client_metadata or {}
+        print(metadata_dict)
         client_metadata = ClientMetadata(**metadata_dict)
     except ValidationError as e:
         # Raise an error to prevent sign up if validation fails
         raise ValueError(f"Invalid client_metadata: {e}") from e
 
+    print(f"Verifying reCAPTCHA token: {client_metadata.recaptcha_token}")
     # Verify reCAPTCHA token
     is_valid = verify_recaptcha(
         token=client_metadata.recaptcha_token,

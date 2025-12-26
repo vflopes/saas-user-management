@@ -1,8 +1,9 @@
 locals {
   cognito_lambdas = {
-    "pre-sign-up-trigger" = {
-      "environment_vars" = tomap({
-        "APP_RECAPTCHA__SECRET_KEY" = "/saas-manual-inputs/recaptcha/secret-key"
+    pre-sign-up-trigger = {
+      environment_vars = tomap({
+        PARAMETERS_SECRETS_EXTENSION_LOG_LEVEL = "INFO"
+        APP_RECAPTCHA__SECRET_KEY              = "/saas-manual-inputs/recaptcha/secret-key"
       })
     },
   }
@@ -70,6 +71,10 @@ resource "aws_lambda_function" "cognito_lambdas" {
   role          = aws_iam_role.cognito_lambdas.arn
   memory_size   = 128
   timeout       = 10
+
+  layers = [
+    local.parameters_and_secrets_layer_arn,
+  ]
 
   logging_config {
     log_format            = "JSON"
