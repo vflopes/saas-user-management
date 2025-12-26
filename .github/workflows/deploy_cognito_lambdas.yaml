@@ -39,13 +39,11 @@ jobs:
 
           cp -r src build/
 
-          zip -q -r build/cognito-lambdas.zip build/*
-
       - name: Upload artifact
         uses: actions/upload-artifact@v6
         with:
           name: cognito-lambdas
-          path: build/cognito-lambdas.zip
+          path: build/
 
   deploy:
     needs: build
@@ -68,9 +66,7 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           name: cognito-lambdas
-
-      - name: Unzip artifact
-        run: unzip cognito-lambdas.zip -d build
+          path: build/
 
       - name: Generate handler name
         run: |
