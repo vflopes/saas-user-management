@@ -75,7 +75,8 @@ jobs:
       - name: Generate handler name
         run: |
           # Replace hyphens with underscores for valid Python module names
-          matrix_lambda_safe=${{ matrix.lambda//-/_ }}
+          matrix_lambda=${{ matrix.lambda }}
+          matrix_lambda_safe=${matrix_lambda//-/_}
           echo "LAMBDA_HANDLER_NAME=src.cognito.${matrix_lambda_safe}.lambda_handler" >> $GITHUB_ENV
 
       - name: Deploy Lambda Function
