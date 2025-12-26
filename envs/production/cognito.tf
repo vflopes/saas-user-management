@@ -76,6 +76,10 @@ resource "aws_cognito_user_pool" "user_pool" {
     attributes_require_verification_before_update = ["email", "phone_number"]
   }
 
+  lambda_config {
+    pre_sign_up = aws_lambda_function.cognito_lambdas["pre-sign-up-trigger"].arn
+  }
+
   admin_create_user_config {
     allow_admin_create_user_only = false
   }
@@ -146,7 +150,7 @@ resource "aws_cognito_user_pool" "user_pool" {
   schema {
     attribute_data_type = "String"
     name                = "preferred_username"
-    required            = true
+    required            = false
     mutable             = true
     string_attribute_constraints {
       min_length = 2

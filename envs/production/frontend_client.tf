@@ -8,7 +8,8 @@ resource "aws_cognito_user_pool_client" "frontend_client" {
   supported_identity_providers = ["COGNITO"]
 
   explicit_auth_flows = [
-    "ALLOW_CUSTOM_AUTH"
+    "ALLOW_CUSTOM_AUTH",
+    "ALLOW_USER_AUTH"
   ]
 
   prevent_user_existence_errors        = "ENABLED"
