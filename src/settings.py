@@ -18,8 +18,6 @@ from pydantic_settings import (
 
 AwsSessionToken = os.getenv("AWS_SESSION_TOKEN", "")
 
-print(f"AwsSessionToken: {'set' if AwsSessionToken else 'not set'}")
-
 
 def get_aws_ssm_parameter(
     parameter_name: str, aws_session_token: str = AwsSessionToken
@@ -52,10 +50,13 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def aws_ssm_parameter_store(self) -> Self:
+        print("Loading settings from AWS SSM Parameter Store...")
+        print(f"AWS_SESSION_TOKEN: {AwsSessionToken}")
         if not AwsSessionToken:
             return self
-
         # Override secret_key with value from AWS SSM
+        print(f"reCAPTCHA secret_key: {self.recaptcha.secret_key}")
+        print(os.getenv("APP_RECAPTCHA_SECRET_KEY"))
         if self.recaptcha.secret_key is not None:
             self.recaptcha.secret_key = get_aws_ssm_parameter(
                 parameter_name=self.recaptcha.secret_key,
