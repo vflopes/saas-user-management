@@ -18,6 +18,8 @@ from pydantic_settings import (
 
 AwsSessionToken = os.getenv("AWS_SESSION_TOKEN", "")
 
+print(f"AwsSessionToken: {'set' if AwsSessionToken else 'not set'}")
+
 
 def get_aws_ssm_parameter(
     parameter_name: str, aws_session_token: str = AwsSessionToken
@@ -41,7 +43,7 @@ class ReCaptchaSettings(BaseModel):
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_prefix="app_",
+        env_prefix="APP_",
         case_sensitive=False,
         env_file=".env",
         env_file_encoding="utf-8",
@@ -49,7 +51,7 @@ class Settings(BaseSettings):
     )
 
     @model_validator(mode="after")
-    def validate_foo(self) -> Self:
+    def aws_ssm_parameter_store(self) -> Self:
         if not AwsSessionToken:
             return self
 

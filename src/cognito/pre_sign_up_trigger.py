@@ -16,7 +16,6 @@ class ClientMetadata(BaseModel):
         alias="reCaptchaToken",
         description="reCAPTCHA token from client",
     )
-    pass
 
 
 def get_settings() -> Callable[[], Settings]:
