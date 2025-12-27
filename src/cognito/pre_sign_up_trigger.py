@@ -1,6 +1,7 @@
 from aws_lambda_powertools.utilities.data_classes import event_source
 from aws_lambda_powertools.utilities.data_classes.cognito_user_pool_event import (
     PreSignUpTriggerEvent,
+    PreSignUpTriggerEventResponse,
 )
 from pydantic import BaseModel, ValidationError, Field
 from typing import Callable
@@ -36,14 +37,11 @@ def lambda_handler(event: PreSignUpTriggerEvent, context):
         # Validate client_metadata
         # client_metadata can be None in the event, so default to {}
         metadata_dict = event.request.client_metadata or {}
-        print(metadata_dict)
         client_metadata = ClientMetadata(**metadata_dict)
     except ValidationError as e:
         # Raise an error to prevent sign up if validation fails
         raise ValueError(f"Invalid client_metadata: {e}") from e
 
-    print(f"Verifying reCAPTCHA token: {client_metadata.recaptcha_token}")
-    # Verify reCAPTCHA token
     is_valid = verify_recaptcha(
         token=client_metadata.recaptcha_token,
         secret_key=recaptcha_secret_key,
@@ -52,4 +50,10 @@ def lambda_handler(event: PreSignUpTriggerEvent, context):
     if not is_valid:
         raise ValueError("reCAPTCHA verification failed")
 
-    return event
+    return PreSignUpTriggerEventResponse(
+        data={
+            "autoConfirmUser": False,
+            "autoVerifyEmail": False,
+            "autoVerifyPhone": False,
+        }
+    )

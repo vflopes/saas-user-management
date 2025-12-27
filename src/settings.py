@@ -60,6 +60,7 @@ class Settings(BaseSettings):
     def model_post_init(self, __context: Any) -> None:
         if not AwsSessionToken:
             return
+
         # Override secret_key with value from AWS SSM
         if self.recaptcha.secret_key is not None:
             self.recaptcha.secret_key = get_aws_ssm_parameter_value(
