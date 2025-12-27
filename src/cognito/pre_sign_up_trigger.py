@@ -1,7 +1,6 @@
 from aws_lambda_powertools.utilities.data_classes import event_source
 from aws_lambda_powertools.utilities.data_classes.cognito_user_pool_event import (
     PreSignUpTriggerEvent,
-    PreSignUpTriggerEventResponse,
 )
 from pydantic import BaseModel, ValidationError, Field
 from typing import Callable
@@ -50,10 +49,8 @@ def lambda_handler(event: PreSignUpTriggerEvent, context):
     if not is_valid:
         raise ValueError("reCAPTCHA verification failed")
 
-    return PreSignUpTriggerEventResponse(
-        data={
-            "autoConfirmUser": False,
-            "autoVerifyEmail": False,
-            "autoVerifyPhone": False,
-        }
-    )
+    event.response.auto_confirm_user = False
+    event.response.auto_verify_email = False
+    event.response.auto_verify_phone = False
+
+    return event.raw_event
