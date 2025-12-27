@@ -18,7 +18,8 @@ AwsSessionToken = os.getenv("AWS_SESSION_TOKEN", "")
 def get_aws_ssm_parameter(
     parameter_name: str, aws_session_token: str = AwsSessionToken
 ) -> Any:
-    url_encoded_name = urllib.parse.quote(parameter_name, safe="")
+    print(f"Fetching SSM parameter: {parameter_name}")
+    url_encoded_name = urllib.parse.quote_plus(parameter_name, encoding="utf-8")
     request = urllib.request.Request(
         f"http://localhost:2773/systemsmanager/parameters/get?name={url_encoded_name}&withDecryption=true"
     )
