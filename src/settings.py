@@ -3,9 +3,8 @@ import urllib.parse
 import os
 import json
 from typing import Any, Optional
-from typing_extensions import Self
 
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel
 from pydantic_settings import (
     BaseSettings,
     SettingsConfigDict,
@@ -29,6 +28,22 @@ def get_aws_ssm_parameter(
     return json.loads(json_value)
 
 
+def get_aws_ssm_parameter_value(
+    parameter_name: str, aws_session_token: str = AwsSessionToken
+) -> Optional[str]:
+    parameter = get_aws_ssm_parameter(
+        parameter_name=parameter_name,
+        aws_session_token=aws_session_token,
+    ).get("Parameter", {})
+
+    if "Value" not in parameter:
+        raise KeyError(
+            f"Parameter {parameter_name} does not have a Value field"
+        )
+
+    return parameter.get("Value")
+
+
 class ReCaptchaSettings(BaseModel):
     secret_key: Optional[str]
 
@@ -42,17 +57,14 @@ class Settings(BaseSettings):
         env_nested_delimiter="__",
     )
 
-    @model_validator(mode="after")
-    def aws_ssm_parameter_store(self) -> Self:
+    def model_post_init(self, __context: Any) -> None:
         if not AwsSessionToken:
-            return self
+            return
         # Override secret_key with value from AWS SSM
         if self.recaptcha.secret_key is not None:
-            self.recaptcha.secret_key = get_aws_ssm_parameter(
+            self.recaptcha.secret_key = get_aws_ssm_parameter_value(
                 parameter_name=self.recaptcha.secret_key,
                 aws_session_token=AwsSessionToken,
             )
-
-        return self
 
     recaptcha: ReCaptchaSettings
