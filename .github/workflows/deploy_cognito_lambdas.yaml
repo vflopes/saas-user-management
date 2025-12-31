@@ -27,10 +27,9 @@ jobs:
 
       - name: Build source code using setup tools
         run: |
-          python -m pip install --upgrade pip
+          git config --global url."https://git:${GITHUB_TOKEN}@github.com/vflopes/".insteadOf "ssh://git@github.com/vflopes/"
 
-          # If you are using a private repository, uncomment the following line to set up authentication:
-          # git config --global url."https://oauth2:${GITHUB_TOKEN}@github.com/Organization/repo".insteadOf "https://github.com/Organization/repo"
+          python -m pip install --upgrade pip
 
           pip install poetry
 
