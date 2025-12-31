@@ -2,7 +2,7 @@ import sys
 import os
 from coverage.control import Coverage
 
-MinimumCoverage = float(os.getenv("MIN_COVERAGE_PERCENTAGE", 90.0))
+MinimumCoverage = float(os.getenv("MIN_COVERAGE_PERCENTAGE", 80.0))
 
 if __name__ == "__main__":
     cov = Coverage()

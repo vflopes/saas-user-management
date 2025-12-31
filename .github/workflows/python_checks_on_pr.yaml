@@ -41,8 +41,7 @@ jobs:
           python -m coverage html
 
       - name: Check coverage threshold
-        run: |
-          python coverage_check.py
+        run: python coverage_check.py
 
       - name: Upload coverage HTML coverage report
         uses: actions/upload-artifact@v4
