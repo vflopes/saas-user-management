@@ -58,7 +58,6 @@ coverage.xml
 Pipfile.lock
 
 # poetry
-poetry.lock
 .venv/
 
 # mypy
