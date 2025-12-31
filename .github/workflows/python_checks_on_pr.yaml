@@ -30,10 +30,7 @@ jobs:
         run: |
           git config --global url."https://git:${GITHUB_TOKEN}@github.com/vflopes/".insteadOf "ssh://git@github.com/vflopes/"
 
-          python -m pip install --upgrade pip
-
-          pip install poetry
-
+          poetry env use 3.13
           poetry install --no-interaction --no-ansi
 
           echo "PATH=$(poetry env info -p)/bin:$PATH" >> $GITHUB_ENV
@@ -44,12 +41,12 @@ jobs:
 
       - name: Run Python tests
         run: |
-          python -m coverage run -m unittest discover -s src -p "*_test.py"
+          coverage run -m unittest discover -s src -p "*_test.py"
 
       - name: Report coverage
         run: |
-          python -m coverage report
-          python -m coverage html
+          coverage report
+          coverage html
 
       - name: Check coverage threshold
         run: python coverage_check.py
