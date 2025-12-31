@@ -25,7 +25,7 @@ jobs:
           cache: "poetry"
 
       - name: Install dependencies
-        environment:
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global url."https://oauth2:${GITHUB_TOKEN}@github.com/vflopes/".insteadOf "git+ssh://git@github.com/vflopes/"
