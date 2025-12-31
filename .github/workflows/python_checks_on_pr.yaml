@@ -36,7 +36,7 @@ jobs:
 
           poetry install --no-interaction --no-ansi
 
-          echo "PATH=$(poetry env info -p)/bin:$PATH" >> $GITHUB_PATH
+          echo "PATH=$(poetry env info -p)/bin:$PATH" >> $GITHUB_ENV
 
       - name: Check linting with Ruff
         run: |
