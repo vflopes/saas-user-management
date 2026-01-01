@@ -45,5 +45,5 @@ class Settings(BaseSettings):
                 parameter_name=self.cleanup.user_pool_id,
             )
 
-    recaptcha: Optional[ReCaptchaSettings]
-    cleanup: Optional[CleanUpSettings]
+    recaptcha: Optional[ReCaptchaSettings] = None
+    cleanup: Optional[CleanUpSettings] = None
