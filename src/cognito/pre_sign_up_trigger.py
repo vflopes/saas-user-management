@@ -1,4 +1,6 @@
-from typing import Callable, Protocol
+from typing import Callable, Protocol, Annotated
+
+from annotated_types import MinLen
 
 from aws_lambda_powertools.utilities.data_classes import event_source
 from aws_lambda_powertools.utilities.data_classes.cognito_user_pool_event import (
@@ -14,8 +16,11 @@ class RecaptchaVerifier(Protocol):
     def __call__(self, token: str, secret_key: str) -> bool: ...
 
 
+RecaptchaToken = Annotated[str, MinLen(1)]
+
+
 class ValidationData(BaseModel):
-    recaptcha_token: str = Field(
+    recaptcha_token: RecaptchaToken = Field(
         default=...,
         alias="reCaptchaToken",
         description="reCAPTCHA token from client",
