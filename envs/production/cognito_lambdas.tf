@@ -10,17 +10,17 @@ locals {
     },
     cleanup-list-unverified = {
       environment_vars = tomap({
-        POWERTOOLS_LOG_LEVEL    = "INFO"
-        POWERTOOLS_SERVICE_NAME = "cleanup-list-unverified"
-        APP_USER_POOL_ID        = "/saas-user-management/production/user_pool_id"
+        POWERTOOLS_LOG_LEVEL      = "INFO"
+        POWERTOOLS_SERVICE_NAME   = "cleanup-list-unverified"
+        APP_CLEANUP__USER_POOL_ID = "/saas-user-management/production/user_pool_id"
       })
     },
     cleanup-delete-unverified = {
       environment_vars = tomap({
-        POWERTOOLS_LOG_LEVEL    = "INFO"
-        POWERTOOLS_SERVICE_NAME = "cleanup-delete-unverified"
-        APP_USER_POOL_ID        = "/saas-user-management/production/user_pool_id"
-        APP_GRACE_PERIOD_HOURS  = "24"
+        POWERTOOLS_LOG_LEVEL            = "INFO"
+        POWERTOOLS_SERVICE_NAME         = "cleanup-delete-unverified"
+        APP_CLEANUP__USER_POOL_ID       = "/saas-user-management/production/user_pool_id"
+        APP_CLEANUP__GRACE_PERIOD_HOURS = "24"
       })
     },
   }

@@ -51,7 +51,7 @@ resource "aws_sfn_state_machine" "cognito_cleanup_state_machine" {
       ListPage = {
         Type       = "Task"
         Resource   = aws_lambda_function.cognito_lambdas["cleanup-list-unverified"].arn
-        ResultPath = "$.listing"
+        ResultPath = "$"
         Parameters = {
           "next_token.$" = "$.next_token"
         }
@@ -67,7 +67,7 @@ resource "aws_sfn_state_machine" "cognito_cleanup_state_machine" {
       }
       ProcessUsers = {
         Type           = "Map"
-        ItemsPath      = "$.listing.users"
+        ItemsPath      = "$.users"
         ResultPath     = null
         MaxConcurrency = 5
         Iterator = {
@@ -95,9 +95,19 @@ resource "aws_sfn_state_machine" "cognito_cleanup_state_machine" {
         Type = "Choice"
         Choices = [
           {
-            Variable   = "$.listing.next_token"
-            IsPresent  = true
-            Next       = "PrepareNextPage"
+            And = [
+              {
+                Variable  = "$.next_token"
+                IsPresent = false
+              },
+              {
+                Not = {
+                  Variable = "$.next_token"
+                  IsNull   = true
+                }
+              }
+            ]
+            Next = "PrepareNextPage"
           }
         ]
         Default = "Done"
@@ -106,7 +116,7 @@ resource "aws_sfn_state_machine" "cognito_cleanup_state_machine" {
         Type       = "Pass"
         ResultPath = "$"
         Result = {
-          "next_token.$" = "$.listing.next_token"
+          "next_token.$" = "$.next_token"
         }
         Next = "ListPage"
       }
@@ -176,4 +186,7 @@ resource "aws_cloudwatch_event_target" "cognito_cleanup_schedule_target" {
   target_id = "cognito-cleanup-unverified"
   arn       = aws_sfn_state_machine.cognito_cleanup_state_machine.arn
   role_arn  = aws_iam_role.cognito_cleanup_scheduler.arn
+  input = jsonencode({
+    "next_token" : null
+  })
 }
