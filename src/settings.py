@@ -1,7 +1,8 @@
-from typing import Any, Optional
+from typing import Any, Optional, Annotated
+from annotated_types import Ge
 
 from saas_python_lib.settings import (
-    get_aws_ssm_parameter_value,
+    get_required_aws_ssm_parameter_value,
     is_aws_session_token_available,
 )
 
@@ -13,7 +14,12 @@ from pydantic_settings import (
 
 
 class ReCaptchaSettings(BaseModel):
-    secret_key: Optional[str]
+    secret_key: str
+
+
+class CleanUpSettings(BaseModel):
+    user_pool_id: str
+    grace_period_hours: Annotated[int, Ge(0)] = 24
 
 
 class Settings(BaseSettings):
@@ -29,10 +35,15 @@ class Settings(BaseSettings):
         if not is_aws_session_token_available():
             return
 
-        # Override secret_key with value from AWS SSM
-        if self.recaptcha.secret_key is not None:
-            self.recaptcha.secret_key = get_aws_ssm_parameter_value(
+        if self.recaptcha is not None:
+            self.recaptcha.secret_key = get_required_aws_ssm_parameter_value(
                 parameter_name=self.recaptcha.secret_key,
             )
 
-    recaptcha: ReCaptchaSettings
+        if self.cleanup is not None:
+            self.cleanup.user_pool_id = get_required_aws_ssm_parameter_value(
+                parameter_name=self.cleanup.user_pool_id,
+            )
+
+    recaptcha: Optional[ReCaptchaSettings]
+    cleanup: Optional[CleanUpSettings]

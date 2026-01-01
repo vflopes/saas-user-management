@@ -3,7 +3,24 @@ locals {
     pre-sign-up-trigger = {
       environment_vars = tomap({
         PARAMETERS_SECRETS_EXTENSION_LOG_LEVEL = "INFO"
+        POWERTOOLS_SERVICE_NAME                = "pre-sign-up-trigger"
+        POWERTOOLS_LOG_LEVEL                   = "INFO"
         APP_RECAPTCHA__SECRET_KEY              = "/saas-manual-inputs/recaptcha/secret-key"
+      })
+    },
+    cleanup-list-unverified = {
+      environment_vars = tomap({
+        POWERTOOLS_LOG_LEVEL    = "INFO"
+        POWERTOOLS_SERVICE_NAME = "cleanup-list-unverified"
+        APP_USER_POOL_ID        = "/saas-user-management/production/user_pool_id"
+      })
+    },
+    cleanup-delete-unverified = {
+      environment_vars = tomap({
+        POWERTOOLS_LOG_LEVEL    = "INFO"
+        POWERTOOLS_SERVICE_NAME = "cleanup-delete-unverified"
+        APP_USER_POOL_ID        = "/saas-user-management/production/user_pool_id"
+        APP_GRACE_PERIOD_HOURS  = "24"
       })
     },
   }
@@ -48,6 +65,8 @@ resource "aws_iam_policy" "cognito_lambdas" {
         Action = [
           "ssm:GetParameter",
           "kms:Decrypt",
+          "cognito-idp:AdminDeleteUser",
+          "cognito-idp:ListUsers",
         ]
         Resource = "*"
       },
@@ -106,4 +125,3 @@ resource "aws_lambda_permission" "cognito_lambda_allow_user_pool" {
   principal     = "cognito-idp.amazonaws.com"
   source_arn    = aws_cognito_user_pool.user_pool.arn
 }
-

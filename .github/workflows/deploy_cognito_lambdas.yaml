@@ -56,7 +56,12 @@ jobs:
     strategy:
       matrix:
         environment: [production]
-        lambda: [pre-sign-up-trigger]
+        lambda:
+          [
+            pre-sign-up-trigger,
+            cleanup-list-unverified,
+            cleanup-delete-unverified,
+          ]
 
     environment: ${{ matrix.environment }}
 
