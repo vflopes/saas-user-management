@@ -77,7 +77,8 @@ resource "aws_cognito_user_pool" "user_pool" {
   }
 
   lambda_config {
-    pre_sign_up = aws_lambda_function.cognito_lambdas["pre-sign-up-trigger"].arn
+    pre_sign_up       = aws_lambda_function.cognito_lambdas["pre-sign-up-trigger"].arn
+    post_confirmation = aws_lambda_function.cognito_lambdas["post-confirmation-trigger"].arn
   }
 
   admin_create_user_config {
@@ -167,14 +168,6 @@ resource "aws_cognito_user_pool" "user_pool" {
       min_length = 0
       max_length = 32
     }
-  }
-
-  schema {
-    attribute_data_type      = "String"
-    name                     = "role"
-    required                 = false
-    mutable                  = true
-    developer_only_attribute = true
   }
 
   lifecycle {

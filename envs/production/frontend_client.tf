@@ -40,12 +40,14 @@ resource "aws_cognito_user_pool_client" "frontend_client" {
 
   enable_token_revocation = true
 
-  access_token_validity  = 1
+  auth_session_validity = 5
+
+  access_token_validity  = 15
   id_token_validity      = 1
-  refresh_token_validity = 7
+  refresh_token_validity = 10
 
   token_validity_units {
-    access_token  = "hours"
+    access_token  = "minutes"
     id_token      = "hours"
     refresh_token = "days"
   }

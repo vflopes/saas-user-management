@@ -1,12 +1,11 @@
-name: Deploy Cognito Lambdas
+name: Deploy Bus Processor
 
 on:
   workflow_dispatch: {}
   push:
     branches: ["main"]
     paths:
-      - "src/controllers/pre_sign_up_trigger.py"
-      - "src/controllers/post_confirmation_trigger.py"
+      - "src/controllers/bus_processor.py"
 
 permissions:
   id-token: write
@@ -57,7 +56,7 @@ jobs:
     strategy:
       matrix:
         environment: [production]
-        lambda: [pre-sign-up-trigger, post-confirmation-trigger]
+        lambda: [bus-processor]
 
     environment: ${{ matrix.environment }}
 
@@ -84,10 +83,10 @@ jobs:
       - name: Deploy Lambda Function
         uses: aws-actions/aws-lambda-deploy@v1.1.0
         with:
-          function-name: cognito-${{ matrix.lambda }}
+          function-name: user-management-${{ matrix.lambda }}
           code-artifacts-dir: build
           s3-bucket: ${{ secrets.AWS_S3_BUCKET }}
-          s3-key: "${{ github.event.repository.name }}/${{ matrix.environment }}/cognito-${{ matrix.lambda }}.zip"
+          s3-key: "${{ github.event.repository.name }}/${{ matrix.environment }}/${{ matrix.lambda }}.zip"
           publish: true
           handler: ${{ env.LAMBDA_HANDLER_NAME }}
           runtime: python3.13

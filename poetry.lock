@@ -76,6 +76,8 @@ files = [
 [package.dependencies]
 botocore-stubs = "*"
 mypy-boto3-cognito-idp = {version = ">=1.42.0,<1.43.0", optional = true, markers = "extra == \"cognito-idp\""}
+mypy-boto3-dynamodb = {version = ">=1.42.0,<1.43.0", optional = true, markers = "extra == \"dynamodb\""}
+mypy-boto3-dynamodbstreams = {version = ">=1.42.0,<1.43.0", optional = true, markers = "extra == \"dynamodbstreams\""}
 mypy-boto3-lambda = {version = ">=1.42.0,<1.43.0", optional = true, markers = "extra == \"lambda\""}
 types-s3transfer = "*"
 
@@ -966,6 +968,30 @@ files = [
 ]
 
 [[package]]
+name = "mypy-boto3-dynamodb"
+version = "1.42.3"
+description = "Type annotations for boto3 DynamoDB 1.42.3 service generated with mypy-boto3-builder 8.12.0"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "mypy_boto3_dynamodb-1.42.3-py3-none-any.whl", hash = "sha256:ed339bb2a61131531a23d55b85e51fd5aed085fff2d6ce1c36f88988b3a9bef4"},
+    {file = "mypy_boto3_dynamodb-1.42.3.tar.gz", hash = "sha256:6e390b7442eded84279fda6ddb8d8f14d0cfc52c8d16e64dab14e6239acb4a2a"},
+]
+
+[[package]]
+name = "mypy-boto3-dynamodbstreams"
+version = "1.42.3"
+description = "Type annotations for boto3 DynamoDBStreams 1.42.3 service generated with mypy-boto3-builder 8.12.0"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "mypy_boto3_dynamodbstreams-1.42.3-py3-none-any.whl", hash = "sha256:514357b16ceec58299eb5c7658d73b274b3a194fad1b1d293b485f6c01f840f1"},
+    {file = "mypy_boto3_dynamodbstreams-1.42.3.tar.gz", hash = "sha256:49ffff16fec3870966fd7604769175fad1e650cfa3cb8b6de4803f99a1e1ef3a"},
+]
+
+[[package]]
 name = "mypy-boto3-lambda"
 version = "1.42.8"
 description = "Type annotations for boto3 Lambda 1.42.8 service generated with mypy-boto3-builder 8.12.0"
@@ -1395,4 +1421,4 @@ zstd = ["backports-zstd (>=1.0.0) ; python_version < \"3.14\""]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13,<4.0.0"
-content-hash = "3c56c31f87999ad2f3de59b86bdaa1c9c55c5cb77771313142791a05bf05ff88"
+content-hash = "abfb6abe7e94c8c345afb71db5fd1ebc5c24225de2c3a567f0816a048fd1be4c"
