@@ -59,11 +59,6 @@ class Settings(BaseSettings):
                 parameter_name=self.cleanup.user_pool_id,
             )
 
-        if self.users_table is not None:
-            self.users_table.name = get_required_aws_ssm_parameter_value(
-                parameter_name=self.users_table.name,
-            )
-
         if self.user_pool is not None:
             self.user_pool.id = get_required_aws_ssm_parameter_value(
                 parameter_name=self.user_pool.id,

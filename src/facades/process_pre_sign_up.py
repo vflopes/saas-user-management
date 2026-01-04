@@ -26,14 +26,14 @@ def process_pre_sign_up(
 ) -> PreSignUpTriggerEvent:
     now = datetime.now(timezone.utc)
 
-    recaptcha_settings = settings.ensure_recaptcha_settings()
+    # recaptcha_settings = settings.ensure_recaptcha_settings()
     users_table_settings = settings.ensure_users_table_settings()
 
     validate_user_username(event.user_name)
 
-    validation_data = PreSignUpValidationData.load_from_dict(
-        event.request.validation_data
-    )
+    # validation_data = PreSignUpValidationData.load_from_dict(
+    #     event.request.validation_data
+    # )
 
     # print("Validating reCAPTCHA token...")
     # print(f"reCAPTCHA token: {validation_data.recaptcha_token}")
