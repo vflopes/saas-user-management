@@ -1,18 +1,18 @@
-name: Deploy Bus Processor
+name: Deploy Pre Sign Up Trigger
 
 on:
   workflow_dispatch: {}
   push:
     branches: ["main"]
     paths:
-      - "src/controllers/bus_processor.py"
+      - "src/controllers/pre_sign_up_trigger.py"
 
 permissions:
   id-token: write
   contents: read
 
 env:
-  LAMBDA_NAME: bus-processor
+  LAMBDA_NAME: pre-sign-up-trigger
 
 jobs:
   build:
@@ -84,7 +84,7 @@ jobs:
       - name: Deploy Lambda Function
         uses: aws-actions/aws-lambda-deploy@v1.1.0
         with:
-          function-name: user-management-${{ env.LAMBDA_NAME }}
+          function-name: ${{ env.LAMBDA_NAME }}
           code-artifacts-dir: build
           s3-bucket: ${{ secrets.AWS_S3_BUCKET }}
           s3-key: "${{ github.event.repository.name }}/${{ matrix.environment }}/${{ env.LAMBDA_NAME }}.zip"

@@ -1,16 +1,18 @@
-name: Deploy Cognito Lambdas
+name: Deploy Post Confirmation Trigger
 
 on:
   workflow_dispatch: {}
   push:
     branches: ["main"]
     paths:
-      - "src/controllers/pre_sign_up_trigger.py"
       - "src/controllers/post_confirmation_trigger.py"
 
 permissions:
   id-token: write
   contents: read
+
+env:
+  LAMBDA_NAME: post-confirmation-trigger
 
 jobs:
   build:
@@ -48,7 +50,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v6
         with:
-          name: cognito-lambdas
+          name: ${{ env.LAMBDA_NAME }}-build
           path: build/
 
   deploy:
@@ -57,7 +59,6 @@ jobs:
     strategy:
       matrix:
         environment: [production]
-        lambda: [pre-sign-up-trigger, post-confirmation-trigger]
 
     environment: ${{ matrix.environment }}
 
@@ -71,23 +72,22 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v7
         with:
-          name: cognito-lambdas
+          name: ${{ env.LAMBDA_NAME }}-build
           path: build/
 
       - name: Generate handler name
         run: |
           # Replace hyphens with underscores for valid Python module names
-          matrix_lambda=${{ matrix.lambda }}
-          matrix_lambda_safe=${matrix_lambda//-/_}
-          echo "LAMBDA_HANDLER_NAME=src.controllers.${matrix_lambda_safe}.lambda_handler" >> $GITHUB_ENV
+          lambda_name_safe=${LAMBDA_NAME//-/_}
+          echo "LAMBDA_HANDLER_NAME=src.controllers.${lambda_name_safe}.lambda_handler" >> $GITHUB_ENV
 
       - name: Deploy Lambda Function
         uses: aws-actions/aws-lambda-deploy@v1.1.0
         with:
-          function-name: cognito-${{ matrix.lambda }}
+          function-name: ${{ env.LAMBDA_NAME }}
           code-artifacts-dir: build
           s3-bucket: ${{ secrets.AWS_S3_BUCKET }}
-          s3-key: "${{ github.event.repository.name }}/${{ matrix.environment }}/cognito-${{ matrix.lambda }}.zip"
+          s3-key: "${{ github.event.repository.name }}/${{ matrix.environment }}/${{ env.LAMBDA_NAME }}.zip"
           publish: true
           handler: ${{ env.LAMBDA_HANDLER_NAME }}
           runtime: python3.13

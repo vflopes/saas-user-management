@@ -1,12 +1,10 @@
 import unittest
-from datetime import datetime
 from unittest.mock import MagicMock, patch
 
 from aws_lambda_powertools.utilities.data_classes.cognito_user_pool_event import (
     PreSignUpTriggerEvent,
 )
 
-from src.dto.sign_up import PreSignUpValidationData
 
 from src.validators.validate_user_username import InvalidUserNameError
 from src.validators.validate_recaptcha import InvalidReCaptchaError
