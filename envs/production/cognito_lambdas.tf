@@ -2,11 +2,11 @@ locals {
   cognito_lambdas = {
     pre-sign-up-trigger = {
       environment_vars = tomap({
-        PARAMETERS_SECRETS_EXTENSION_LOG_LEVEL = "INFO"
-        POWERTOOLS_LOG_LEVEL                   = "INFO"
-        POWERTOOLS_SERVICE_NAME                = "pre-sign-up-trigger"
-        APP_RECAPTCHA__SECRET_KEY              = "/saas-manual-inputs/recaptcha/secret-key"
-        APP_USERS_TABLE__NAME                  = data.aws_ssm_parameter.user_management["user_management_users_table_name"].name
+        PARAMETERS_SECRETS_EXTENSION_LOG_LEVEL           = "INFO"
+        POWERTOOLS_LOG_LEVEL                             = "INFO"
+        POWERTOOLS_SERVICE_NAME                          = "pre-sign-up-trigger"
+        APP_RECAPTCHA__SECRET_KEY                        = "/saas-manual-inputs/recaptcha/secret-key"
+        APP_USERS_TABLE__NAME                            = data.aws_ssm_parameter.user_management["user_management_users_table_name"].name
         APP_USERS_TABLE__EXPIRE_UNVERIFIED_USERS_MINUTES = "360"
       })
     },
@@ -92,8 +92,8 @@ resource "aws_lambda_function" "cognito_lambdas" {
   handler       = "index.handler"
   function_name = "cognito-${each.key}"
   role          = aws_iam_role.cognito_lambdas.arn
-  memory_size   = 128
-  timeout       = 10
+  memory_size   = 256
+  timeout       = 5
 
   layers = [
     local.parameters_and_secrets_layer_arn,
