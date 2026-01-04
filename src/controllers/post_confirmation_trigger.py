@@ -14,16 +14,14 @@ from aws_lambda_powertools.utilities.data_classes.cognito_user_pool_event import
 
 from src.services.user import set_user_as_verified
 
+settings = Settings.model_validate({})
+users_table_settings = settings.ensure_users_table_settings()
+dynamodb_client = aws_adapter.get_dynamodb_client()
+
 
 @event_source(data_class=PostConfirmationTriggerEvent)
 def lambda_handler(event: PostConfirmationTriggerEvent, context):
-    settings = Settings.model_validate({})
-
-    users_table_settings = settings.ensure_users_table_settings()
-
     now = datetime.now(timezone.utc)
-
-    dynamodb_client = aws_adapter.get_dynamodb_client()
 
     set_user_as_verified(
         dynamodb_client, users_table_settings.name, event.user_name, now

@@ -44,15 +44,15 @@ def process_pre_sign_up(
     #     verify_recaptcha,
     # )
 
-    def contact_uniqueness_validator(attribute_name, attribute_value) -> bool:
-        return is_contact_in_use(
-            cognito_client=cognito_client,
-            user_pool_id=event.user_pool_id,
-            attribute_name=attribute_name,
-            attribute_value=attribute_value,
-        )
+    # def contact_uniqueness_validator(attribute_name, attribute_value) -> bool:
+    #     return is_contact_in_use(
+    #         cognito_client=cognito_client,
+    #         user_pool_id=event.user_pool_id,
+    #         attribute_name=attribute_name,
+    #         attribute_value=attribute_value,
+    #     )
 
-    enforce_user_contact_uniqueness(event, contact_uniqueness_validator)
+    # enforce_user_contact_uniqueness(event, contact_uniqueness_validator)
 
     register_unverified_user(event, users_table_settings, dynamodb_client, now)
 
