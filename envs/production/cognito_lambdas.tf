@@ -3,24 +3,20 @@ locals {
     pre-sign-up-trigger = {
       environment_vars = tomap({
         PARAMETERS_SECRETS_EXTENSION_LOG_LEVEL = "INFO"
-        POWERTOOLS_SERVICE_NAME                = "pre-sign-up-trigger"
         POWERTOOLS_LOG_LEVEL                   = "INFO"
+        POWERTOOLS_SERVICE_NAME                = "pre-sign-up-trigger"
         APP_RECAPTCHA__SECRET_KEY              = "/saas-manual-inputs/recaptcha/secret-key"
+        APP_USERS_TABLE__NAME                  = data.aws_ssm_parameter.user_management["user_management_users_table_name"].name
+        APP_USERS_TABLE__EXPIRE_UNVERIFIED_USERS_MINUTES = "360"
       })
     },
-    cleanup-list-unverified = {
+    post-confirmation-trigger = {
       environment_vars = tomap({
-        POWERTOOLS_LOG_LEVEL      = "INFO"
-        POWERTOOLS_SERVICE_NAME   = "cleanup-list-unverified"
-        APP_CLEANUP__USER_POOL_ID = "/saas-user-management/production/user_pool_id"
-      })
-    },
-    cleanup-delete-unverified = {
-      environment_vars = tomap({
-        POWERTOOLS_LOG_LEVEL            = "INFO"
-        POWERTOOLS_SERVICE_NAME         = "cleanup-delete-unverified"
-        APP_CLEANUP__USER_POOL_ID       = "/saas-user-management/production/user_pool_id"
-        APP_CLEANUP__GRACE_PERIOD_HOURS = "24"
+        PARAMETERS_SECRETS_EXTENSION_LOG_LEVEL = "INFO"
+        POWERTOOLS_LOG_LEVEL                   = "INFO"
+        POWERTOOLS_SERVICE_NAME                = "post-confirmation-trigger"
+        APP_PHOSTHOG__API_KEY                  = "/saas-manual-inputs/posthog/api-key"
+        APP_PHOSTHOG__API_HOST                 = "/saas-manual-inputs/posthog/api-host"
       })
     },
   }
@@ -69,6 +65,14 @@ resource "aws_iam_policy" "cognito_lambdas" {
           "cognito-idp:ListUsers",
         ]
         Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "dynamodb:PutItem",
+          "dynamodb:UpdateItem",
+        ]
+        Resource = data.aws_ssm_parameter.user_management["user_management_users_table_arn"].value
       },
     ]
   })
