@@ -1316,11 +1316,15 @@ groups = ["main"]
 files = []
 develop = false
 
+[package.dependencies]
+requests = ">=2.32.5,<3.0.0"
+types-requests = ">=2.32.4.20250913,<3.0.0.0"
+
 [package.source]
 type = "git"
 url = "ssh://git@github.com/vflopes/saas-python-lib.git"
 reference = "main"
-resolved_reference = "645b98457b51fbc27afabffd3813f1ceb0ffb891"
+resolved_reference = "43d040ae9e3e69833699f9eadf328d5f4ae96daf"
 
 [[package]]
 name = "six"
@@ -1352,7 +1356,7 @@ version = "2.32.4.20250913"
 description = "Typing stubs for requests"
 optional = false
 python-versions = ">=3.9"
-groups = ["dev"]
+groups = ["main", "dev"]
 files = [
     {file = "types_requests-2.32.4.20250913-py3-none-any.whl", hash = "sha256:78c9c1fffebbe0fa487a418e0fa5252017e9c60d1a2da394077f1780f655d7e1"},
     {file = "types_requests-2.32.4.20250913.tar.gz", hash = "sha256:abd6d4f9ce3a9383f269775a9835a4c24e5cd6b9f647d64f88aa4613c33def5d"},
