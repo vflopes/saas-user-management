@@ -35,6 +35,9 @@ def process_pre_sign_up(
         event.request.validation_data
     )
 
+    print("Validating reCAPTCHA token...")
+    print(f"reCAPTCHA token: {validation_data.recaptcha_token}")
+    print(f"Secret key size: {len(recaptcha_settings.secret_key)} characters")
     validate_recaptcha(
         validation_data.recaptcha_token,
         recaptcha_settings.secret_key,
