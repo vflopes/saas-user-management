@@ -17,3 +17,7 @@ locals {
   user_management_users_table_stream_arn = data.aws_ssm_parameter.user_management["user_management_users_table_stream_arn"].value
   user_management_users_table_arn        = data.aws_ssm_parameter.user_management["user_management_users_table_arn"].value
 }
+
+data "aws_ssm_parameter" "api_gateway_id" {
+  name = "/saas-infrastructure/production/api_gateway_id"
+}

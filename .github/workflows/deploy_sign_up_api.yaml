@@ -1,0 +1,93 @@
+name: Deploy Sign Up API
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: ["main"]
+    paths:
+      - "src/controllers/sign_up_api.py"
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  LAMBDA_NAME: sign-up-api
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Install poetry
+        run: pipx install poetry
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Build source code using setup tools
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global url."https://git:${GITHUB_TOKEN}@github.com/vflopes/".insteadOf "ssh://git@github.com/vflopes/"
+
+          poetry env use 3.13
+          poetry self add poetry-plugin-export
+          poetry export -f requirements.txt -o requirements.txt --without-hashes
+
+          mkdir build
+
+          pip install -r requirements.txt -t build
+
+          cp -r src build/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ env.LAMBDA_NAME }}-build
+          path: build/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [production]
+
+    environment: ${{ matrix.environment }}
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5.1.1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Download artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: ${{ env.LAMBDA_NAME }}-build
+          path: build/
+
+      - name: Generate handler name
+        run: |
+          # Replace hyphens with underscores for valid Python module names
+          lambda_name_safe=${LAMBDA_NAME//-/_}
+          echo "LAMBDA_HANDLER_NAME=src.controllers.${lambda_name_safe}.lambda_handler" >> $GITHUB_ENV
+
+      - name: Deploy Lambda Function
+        uses: aws-actions/aws-lambda-deploy@v1.1.0
+        with:
+          function-name: user-management-${{ env.LAMBDA_NAME }}
+          code-artifacts-dir: build
+          s3-bucket: ${{ secrets.AWS_S3_BUCKET }}
+          s3-key: "${{ github.event.repository.name }}/${{ matrix.environment }}/${{ env.LAMBDA_NAME }}.zip"
+          publish: true
+          handler: ${{ env.LAMBDA_HANDLER_NAME }}
+          runtime: python3.13
